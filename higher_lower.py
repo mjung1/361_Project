@@ -1,4 +1,5 @@
 import random
+import time
 
 class Game():
     def __init__(self):
@@ -44,7 +45,19 @@ class Game():
         self.end = int(input("Please enter the end of the range. (For example, if you wanted the range of valid numbers to be between 10 and 30, you would enter '30'): "))
 
     def generate_target(self):
-        self.target = random.randint(self.start, self.end)
+        with open("num-service.txt", "w") as file:
+                file.write(f"{self.start},{self.end}")
+        num_generated = False
+        while True:
+            time.sleep(1.0)
+            with open("num-service.txt", "r") as f:
+                line = f.readline().strip()
+            if not line:
+                continue
+            if line.isnumeric():
+                num_generated = True
+                self.target = int(line)
+                break
 
     def modify_guess_limit(self):
         print()
@@ -66,7 +79,6 @@ class Game():
         if confirmation == 'N':
             self.main_screen()
             return
-
         self.generate_target()
         # generate a random number between number range
         while self.guess_ct < self.guess_limit and not self.won:
@@ -90,6 +102,7 @@ class Game():
         else:
             print(f"Sorry, you've ran out of guesses.")
         # prompt user to play another game
+        open('num-service.txt', 'w').close()
         play_again = input("Would you like to play again? (Y/N): ")
         if play_again == 'Y':
             self.won = False
@@ -99,7 +112,6 @@ class Game():
 def main():
     print('run')
     game = Game()
-    # game.play_game()
 
 if __name__ == "__main__":
     main()
