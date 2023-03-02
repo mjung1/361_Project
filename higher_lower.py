@@ -9,6 +9,7 @@ class Game():
         self.guess_ct = 0
         self.won = False
         self.target = None
+        self.total_games = 0
         self.win_count = 0
         self.best_win = float('inf')
         self.feature_map = {
@@ -76,6 +77,28 @@ class Game():
         print("")
         self.guess_limit = int(input("Great! What is the maximum number of guesses you’d like to specify? Please enter a numerical value. (For example, if you wanted to have up to 5 guesses before the game ends, you would enter '5'): "))
 
+    def end_game(self):
+        self.total_games += 1
+        # if game won, print won
+        if self.won:
+            self.win_count += 1
+            self.best_win = min(self.best_win, self.guess_ct)
+            print()
+            print(f"Congrats! You won the game in {self.guess_ct} guesses!")
+            print(f"You've won a total of {self.win_count} out of {self.total_games} games, with the quickest win being in {self.best_win} guesses.")
+        # if game not won after reaching guess limit, print loss
+        else:
+            print()
+            print(f"Sorry, you've ran out of guesses.")
+            print(f"You've won a total of {self.win_count} out of {self.total_games} games, with the quickest win being in {self.best_win} guesses.")
+        # prompt user to play another game
+        open('num-service.txt', 'w').close()
+        play_again = input("Would you like to play again? (Y/N): ")
+        if play_again == 'Y':
+            self.won = False
+            self.guess_ct = 0
+            self.play_game()
+
     def play_game(self):
         print()
         # validate user is ready to play game
@@ -98,26 +121,7 @@ class Game():
                 print(f"Too low! Try again. You have {self.guess_limit - self.guess_ct} guesses remaining.")
             elif guess > self.target:
                 print(f"Too high! Try again. You have {self.guess_limit - self.guess_ct} guesses remaining.")
-            
-        # if game won, print won
-        if self.won:
-            self.win_count += 1
-            self.best_win = min(self.best_win, self.guess_ct)
-            print()
-            print(f"Congrats! You won the game in {self.guess_ct} guesses!")
-            print(f"You've won a total of {self.win_count} games, with the quickest win being in {self.best_win} guesses.")
-        # if game not won after reaching guess limit, print loss
-        else:
-            print()
-            print(f"Sorry, you've ran out of guesses.")
-            print(f"You've won a total of {self.win_count} games, with the quickest win being in {self.best_win} guesses.")
-        # prompt user to play another game
-        open('num-service.txt', 'w').close()
-        play_again = input("Would you like to play again? (Y/N): ")
-        if play_again == 'Y':
-            self.won = False
-            self.guess_ct = 0
-            self.play_game()
+        self.end_game()
 
 def main():
     game = Game()

@@ -7,7 +7,6 @@ def generate_number(min_num, max_num):
         random_num = random.randint(min_num,max_num)
         print(f"Random number: {random_num}")
         f.write(f"{random_num}\n")
-
     print("Listening for input...")
 
 if __name__ == '__main__':
