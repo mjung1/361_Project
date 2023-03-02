@@ -9,6 +9,8 @@ class Game():
         self.guess_ct = 0
         self.won = False
         self.target = None
+        self.win_count = 0
+        self.best_win = float('inf')
         self.feature_map = {
             'G': self.modify_guess_limit,
             'R': self.modify_range,
@@ -28,6 +30,8 @@ class Game():
         self.start = 1
         self.end = 10
         self.guess_limit = 5
+        self.win_count = 0
+        self.best_win = float('inf')
         
     def modify_range(self):
         # provide user with more info and opportunity to back out
@@ -46,7 +50,7 @@ class Game():
 
     def generate_target(self):
         with open("num-service.txt", "w") as file:
-                file.write(f"{self.start},{self.end}")
+            file.write(f"{self.start},{self.end}")
         num_generated = False
         while True:
             time.sleep(1.0)
@@ -97,10 +101,16 @@ class Game():
             
         # if game won, print won
         if self.won:
+            self.win_count += 1
+            self.best_win = min(self.best_win, self.guess_ct)
+            print()
             print(f"Congrats! You won the game in {self.guess_ct} guesses!")
+            print(f"You've won a total of {self.win_count} games, with the quickest win being in {self.best_win} guesses.")
         # if game not won after reaching guess limit, print loss
         else:
+            print()
             print(f"Sorry, you've ran out of guesses.")
+            print(f"You've won a total of {self.win_count} games, with the quickest win being in {self.best_win} guesses.")
         # prompt user to play another game
         open('num-service.txt', 'w').close()
         play_again = input("Would you like to play again? (Y/N): ")
@@ -110,7 +120,6 @@ class Game():
             self.play_game()
 
 def main():
-    print('run')
     game = Game()
 
 if __name__ == "__main__":
